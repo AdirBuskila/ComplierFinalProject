@@ -1,64 +1,32 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Assembler Project README</title>
-    <style>
-        body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; padding: 20px; }
-        h1, h2 { color: #007bff; }
-        p, ul { margin-bottom: 10px; }
-        code { background: #f4f4f4; padding: 2px 4px; }
-        .container { max-width: 800px; margin: auto; }
-        .img-container { text-align: center; margin: 20px 0; }
-        img { max-width: 100%; height: auto; }
-    </style>
-</head>
-<body>
-<div class="container">
-    <h1>Final Project - Assembler</h1>
-    <p>This project, developed by Adir Buskila and Niv Harosh for the System Programming Lab course at the Open University of Israel, is an assembler for a 16-instruction assembly language designed for an imaginary 14-bit CPU. The assembler translates assembly code into machine code, showcasing our hands-on experience with system software development.</p>
+<h1>FinalProject</h1>
+<p>Final Project in the course System Programming Lab by the Open University of Israel. The purpose of this project is to build an assembler for a 16-instruction assembly language, for an imaginary 14-bit CPU with 14-bit & 256 words memory size. The author of this project is @BAxPI.</p>
 
-    <h2>Running the Program</h2>
-    <p>To use the assembler, execute the following steps in a terminal within the project's directory:</p>
-    <ol>
-        <li>Compile the program with the <code>make</code> command.</li>
-        <li>To assemble files, use <code>./assembler filename</code> without the <code>.as</code> extension.</li>
-    </ol>
-    <p>Example:</p>
-    <pre><code>$ assembler program</code></pre>
-    <p>If successful, the assembler generates four output files:</p>
-    <ul>
-        <li><code>.am</code> - The preprocessed source, with macros expanded and comments/empty lines removed.</li>
-        <li><code>.ob</code> - The binary machine code.</li>
-        <li><code>.ext</code> - Extern symbols used in the source.</li>
-        <li><code>.ent</code> - Entry symbols defined in the source.</li>
-    </ul>
+<h2>Running the Program</h2>
+<p>To run the program, follow these steps:</p>
+<p>1. Open a terminal window and navigate to the directory where the program files are located.</p>
+<p>2. Run the <code>make</code> command to compile the program.</p>
+<p>3. Run the <code>assembler</code> command followed by the name of the file(s) you want to assemble. The file(s) should be in the .as format and the input should be provided without the .as extension.</p>
+<p>Here's an example command for assembling a single file named program:</p>
+<code>$ assembler program</code>
 
-    <div class="img-container">
-        <img src="https://github.com/BAxPI/FinalProject/blob/main/images/am_output.png?raw=true" alt="program.am Output Example">
-        <img src="https://github.com/BAxPI/FinalProject/blob/main/images/ob_output.png?raw=true" alt="program.ob Output Example">
-    </div>
+<p>If the file(s) are syntaxly correct, the program will generate 4 output files in the same directory:</p>
+<p>1. <code>.am</code> - Contains the macros from the original file spread, comment lines (starting with ;) deleted, and empty lines deleted.</p>
+<p>2. <code>.ob</code> - Contains the binary code of the source code.</p>
+<p>3. <code>.ext</code> - Contains the extern symbols in the source code.</p>
+<p>4. <code>.ent</code> - Contains the entry symbols in the source code.</p>
 
-    <p>In case of errors, the assembler will report them to <code>stdout</code> and only produce the <code>.am</code> file.</p>
-    <div class="img-container">
-        <img src="https://github.com/BAxPI/FinalProject/blob/main/images/errors_output.png?raw=true" alt="Error Messages Example">
-    </div>
+<p>If the file(s) has errors the assembler won't produce any output file except the <code>.am file</code> and will print to the <code>stdout</code> all the errors it found.</p>
 
-    <h2>Directory Structure (Modules)</h2>
-    <p>The project is organized into modules for clarity and maintainability:</p>
-    <ul>
-        <li><code>assembler</code> - Main function, argument processing.</li>
-        <li><code>preprocessor</code> - Preprocesses the assembly code.</li>
-        <li><code>first_pass</code> and <code>second_pass</code> - Implements the two-pass assembly process.</li>
-        <li><code>globals.h</code> - Defines types and constants.</li>
-        <li><code>lexer.h</code> and <code>lexer</code> - Constructs the Abstract Syntax Tree.</li>
-        <li><code>code</code> and <code>directives</code> - Functions for encoding commands and directives.</li>
-        <li><code>tables</code> - Manages Macros and Symbols tables.</li>
-        <li><code>write_files</code> - Handles output file creation.</li>
-        <li><code>utils</code> - General utility functions.</li>
-    </ul>
-    <p>Thank you for exploring our assembler project. We're open to contributions and suggestions to improve our assembler's functionality and efficiency. Feel free to fork the repository and submit pull requests!</p>
-</div>
-</body>
-</html>
+<h2>Directory Structure (Modules)</h2>
+<p>1. <code>assembler</code> - Main function definition, argv & argc processing, single file processing.</p>
+<p>2. <code>preprocessor</code> - The preprocessor of the assembler. </p>
+<p>3. <code>first_pass</code> - The first pass of the assembler. </p>
+<p>4. <code>second_pass</code> - The second pass of the assembler. </p>
+<p>5. <code>globals.h</code> - Contains type and constant definitions. </p>
+<p>6. <code>lexer.h</code> - Contains the definition of the Abstract Syntax Tree of a line in a source code. </p>
+<p>7. <code>lexer</code> - Contains the implementation of the lexer of the assembler. </p>
+<p>8. <code>code</code> - Functions related to the encoding of command line. </p>
+<p>9. <code>directives</code> - Functions related to the encoding of directive line. </p>
+<p>10. <code>tables</code> - Contains the implementation of Macros Table & Symbols Table. </p>
+<p>11. <code>write_files</code> - Functions related to the creation of output files. </p>
+<p>12. <code>utils</code> - Contains function for general use throughout the entire project. </p>
