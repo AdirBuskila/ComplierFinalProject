@@ -1,49 +1,64 @@
-Assembler Project
-This assembler is a collaborative project developed by Adir Buskila and Niv Harosh for the Systems Programming Laboratory course. Our assembler translates assembly language code, defined specifically for this project, into machine code, mimicking fundamental system software's operations.
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Assembler Project README</title>
+    <style>
+        body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; padding: 20px; }
+        h1, h2 { color: #007bff; }
+        p, ul { margin-bottom: 10px; }
+        code { background: #f4f4f4; padding: 2px 4px; }
+        .container { max-width: 800px; margin: auto; }
+        .img-container { text-align: center; margin: 20px 0; }
+        img { max-width: 100%; height: auto; }
+    </style>
+</head>
+<body>
+<div class="container">
+    <h1>Final Project - Assembler</h1>
+    <p>This project, developed by Adir Buskila and Niv Harosh for the System Programming Lab course at the Open University of Israel, is an assembler for a 16-instruction assembly language designed for an imaginary 14-bit CPU. The assembler translates assembly code into machine code, showcasing our hands-on experience with system software development.</p>
 
-Project Overview
-The project's primary goal is to provide hands-on experience with the intricacies of system software development, particularly focusing on the assembly process. Written entirely in C, this assembler supports a predefined assembly language, adhering to strict compilation flags to ensure high-quality, standard-compliant code.
+    <h2>Running the Program</h2>
+    <p>To use the assembler, execute the following steps in a terminal within the project's directory:</p>
+    <ol>
+        <li>Compile the program with the <code>make</code> command.</li>
+        <li>To assemble files, use <code>./assembler filename</code> without the <code>.as</code> extension.</li>
+    </ol>
+    <p>Example:</p>
+    <pre><code>$ assembler program</code></pre>
+    <p>If successful, the assembler generates four output files:</p>
+    <ul>
+        <li><code>.am</code> - The preprocessed source, with macros expanded and comments/empty lines removed.</li>
+        <li><code>.ob</code> - The binary machine code.</li>
+        <li><code>.ext</code> - Extern symbols used in the source.</li>
+        <li><code>.ent</code> - Entry symbols defined in the source.</li>
+    </ul>
 
-Features
-Two-Pass Assembly Process: Implements a two-pass strategy for symbol resolution and machine code generation.
-Macro Preprocessing: Supports macro definitions and expansions, allowing for more concise and reusable assembly code.
-Comprehensive Error Handling: Detects and reports syntax errors, undefined symbols, and invalid instructions with detailed messages.
-Symbol and Macro Tables: Manages symbols and macros efficiently, supporting external and internal references.
-Output File Generation: Produces machine code, symbol tables, and error logs as separate files, facilitating further linking and loading processes.
-Getting Started
-Prerequisites
-GCC compiler
-GNU Make
-Basic Unix/Linux command line knowledge
-Compilation
-To compile the assembler, navigate to the project directory and run the following command:
+    <div class="img-container">
+        <img src="https://github.com/BAxPI/FinalProject/blob/main/images/am_output.png?raw=true" alt="program.am Output Example">
+        <img src="https://github.com/BAxPI/FinalProject/blob/main/images/ob_output.png?raw=true" alt="program.ob Output Example">
+    </div>
 
-bash
-Copy code
-make
-This command utilizes the Makefile to compile the source code with the appropriate gcc flags, generating an executable.
+    <p>In case of errors, the assembler will report them to <code>stdout</code> and only produce the <code>.am</code> file.</p>
+    <div class="img-container">
+        <img src="https://github.com/BAxPI/FinalProject/blob/main/images/errors_output.png?raw=true" alt="Error Messages Example">
+    </div>
 
-Usage
-To run the assembler on assembly source files:
-
-bash
-Copy code
-./assembler filename1 filename2 ...
-Replace filename1 filename2 ... with the names of your assembly language source files, excluding the .as extension.
-
-Output Files
-The assembler generates the following files for each input source:
-
-.ob (Object File): Contains the generated machine code.
-.ent (Entries File): Details symbols declared as entry points.
-.ext (Externals File): Lists references to external symbols.
-.am (Preprocessed Source File): Shows the source file post-macro expansion.
-Contributors
-This project was developed by:
-
-Adir Buskila
-Niv Harosh
-We welcome contributions and suggestions to improve the assembler. Feel free to fork the repository and submit pull requests.
-
-License
-This project is licensed under the MIT License - see the LICENSE.md file for details.
+    <h2>Directory Structure (Modules)</h2>
+    <p>The project is organized into modules for clarity and maintainability:</p>
+    <ul>
+        <li><code>assembler</code> - Main function, argument processing.</li>
+        <li><code>preprocessor</code> - Preprocesses the assembly code.</li>
+        <li><code>first_pass</code> and <code>second_pass</code> - Implements the two-pass assembly process.</li>
+        <li><code>globals.h</code> - Defines types and constants.</li>
+        <li><code>lexer.h</code> and <code>lexer</code> - Constructs the Abstract Syntax Tree.</li>
+        <li><code>code</code> and <code>directives</code> - Functions for encoding commands and directives.</li>
+        <li><code>tables</code> - Manages Macros and Symbols tables.</li>
+        <li><code>write_files</code> - Handles output file creation.</li>
+        <li><code>utils</code> - General utility functions.</li>
+    </ul>
+    <p>Thank you for exploring our assembler project. We're open to contributions and suggestions to improve our assembler's functionality and efficiency. Feel free to fork the repository and submit pull requests!</p>
+</div>
+</body>
+</html>
