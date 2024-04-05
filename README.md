@@ -1,5 +1,5 @@
 <h1>FinalProject</h1>
-<p>Final Project in the course System Programming Lab by the Open University of Israel. The purpose of this project is to build an assembler for a 16-instruction assembly language, for an imaginary 14-bit CPU with 14-bit & 256 words memory size. The author of this project is @BAxPI.</p>
+<p>Final Project in the course System Programming Lab by the Open University of Israel. The purpose of this project is to build an assembler for a 16-instruction assembly language, for an imaginary 14-bit CPU with 14-bit & 256 words memory size. The authors of this project is Niv Harosh & Adir Buskila</p>
 
 <h2>Running the Program</h2>
 <p>To run the program, follow these steps:</p>
