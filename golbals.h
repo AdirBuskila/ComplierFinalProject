@@ -1,5 +1,3 @@
-//*This is where we start*//
-//*Another one*//
 
 #define REG_COUNT 8
 #define OPCODE_COUNT 16
