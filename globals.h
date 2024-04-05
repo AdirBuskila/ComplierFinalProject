@@ -1,3 +1,5 @@
+#ifndef _GLOBALS_H
+#define _GLOBALS_H
 
 #define REG_COUNT 8
 #define OPCODE_COUNT 16
@@ -9,3 +11,5 @@
 #define AS_FILE_FINISH ".as"
 #define AM_FILE_FINISH ".am"
 #define MAX_SYMBOL 4096
+
+#endif
