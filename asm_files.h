@@ -8,4 +8,6 @@
 #include "utils.h"
 #include "tabels.h"
 void write_obj_file(char *file_name,machine_word code_im[],long ic,data_word data_im[],long dc);
+void write_entry_file(char *file_name,sym_table *table);
+void write_extern_file(char *file_name,sym_table *table,machine_word code_img[],long ic);
 #endif //COMPILERFINALPROJECT_ASM_FILES_H
