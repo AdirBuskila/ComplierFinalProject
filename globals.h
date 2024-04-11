@@ -1,6 +1,9 @@
 #ifndef _GLOBALS_H
 #define _GLOBALS_H
-
+#define _CRT_SECURE_NO_WARNINGS
+#include <string.h>
+#include <stdlib.h>
+#include <stdio.h>
 /* Register and Opcode specifications */
 #define REG_COUNT 8 /* Number of registers in the CPU */
 #define OPCODE_COUNT 16 /* Total count of different opcodes */
@@ -8,6 +11,7 @@
 /* Assembly file formatting constraints */
 #define MAX_LINE_LENGTH 81 /* Maximum length of a line in the assembly file, including the newline character */
 #define MAX_LABEL_LENGTH 31 /* Maximum length of a label */
+#define MAX_MACRO_NAME_LENGTH 31
 #define INSTRUCTIONS_COUNT 4 /* Total number of instruction types (might need adjustment) */
 
 /* Memory layout */
@@ -41,5 +45,37 @@
 
 /* Limitations for command line interface */
 #define MAX_INPUT_FILES 10 /* Maximum number of input files that can be processed in a single run */
-
+typedef struct first_word{
+    unsigned int are_bits: 2;
+    unsigned int dest_opcode_add_bits: 2;
+    unsigned int src_opcode_add_bits: 2;
+    unsigned int opcode_bits: 4;
+    unsigned int not_used_bits: 4;
+}first_word;
+typedef struct immd_or_direct_word{
+    unsigned int are_bits: 2;
+    unsigned int opcode_bits: 12;
+}immd_or_direct_word;
+typedef struct reg_word{
+    unsigned int are_bits: 2;
+    unsigned int reg_dest_bits: 3;
+    unsigned int regs_src_bits: 3;
+    unsigned int not_used_bits: 6;
+}reg_word;
+typedef struct machine_word{
+    char *label_name;
+    union type_word{
+        first_word *first_word;
+        immd_or_direct_word *imm_or_dir_word;
+        reg_word *reg_word;
+    }type_word;
+}machine_word;
+typedef struct data_word{
+    unsigned int data: 14;
+}data_word;
+typedef struct line_description{
+    char *file_name;
+    int  line_number;
+    char *content;
+}line_description;
 #endif
