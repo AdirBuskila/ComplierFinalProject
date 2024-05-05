@@ -1,124 +1,76 @@
 //
 // Created by ניב on 05/04/2024.
 //
-
+#include <stdio.h>
+#include <stdlib.h>
 #include "preprossesor.h"
 #include "globals.h"
-void extract_macro_name(const char *line, char *buffer, size_t buffer_size) {
-    if (!line || !buffer || buffer_size == 0) return;
+#include "utils.h"
+#include "tabels.h"
 
-    const char *start = line;  // Start of the macro name.
-    const char *end = line;    // End of the macro name.
 
-    // Find the end of the macro name.
-    while (*end && !isspace((unsigned char)*end)) {
-        end++;
+bool preprocess_file(char *filename) {
+    bool macro_declration;
+    int num_of_words_in_line = 0,index=0;
+    char current_line[MAX_LINE_LENGTH + 2];
+    char **splitted_line;
+    char *macro_name=NULL;
+    macro_table *table = create_macro_table();
+    char *am_filename = str_allocate_cat(filename, ".am");
+    char *origin_filename = str_allocate_cat(filename, ".as");
+    FILE *origin_file_des = fopen(origin_filename, "r");
+    FILE *am_file_des ;
+
+    if(origin_file_des==NULL){
+        printf("The file %s couldn't open\n",origin_filename);
+        free(am_filename);
+        free_macro_table(table);
+        free(origin_filename);
+        return FALSE;
     }
-
-    // Calculate the length of the macro name.
-    size_t length = end - start;
-
-    // Ensure the length does not exceed the buffer size minus one (for the null terminator).
-    if (length >= buffer_size) {
-        length = buffer_size - 1;
+    am_file_des= fopen(am_filename,"w+");
+    if(am_file_des==NULL){
+        printf("The file %s couldn't open\n",am_filename);
+        free(am_filename);
+        free(origin_filename);
+        fclose(origin_file_des);
+        fclose(am_file_des);
+        free_macro_table(table);
+        return FALSE;
     }
-
-    // Copy the macro name into the buffer and null-terminate it.
-    strncpy(buffer, start, length);
-    buffer[length] = '\0';
-}
-macro_states line_examination(char *line, macro_table *table) {
-
-    char macro_name[MAX_LINE_LENGTH]; // Ensure this size is adequate for your needs.
-
-    // Check for the end of a macro declaration.
-    if (strstr(line, END_MACRO_DEC)) {
-        return end_macro_definition;
-    }
-
-    // Check for the start of a new macro declaration.
-    char *tok = strstr(line, MACRO_DEC);
-    if (tok) {
-        tok += strlen(MACRO_DEC)+1; // Move past declaration keyword.
-        skip_space(&tok); // Adjust 'tok' to skip any whitespace.
-        extract_macro_name(tok, macro_name, sizeof(macro_name));
-
-        if (!get_lines(table, macro_name)) {
-            // New macro, insert into the table with an initial placeholder for content.
-            insert_macro_content(table, macro_name, "");
+    while(fgets(current_line,MAX_LINE_LENGTH+1,origin_file_des)){
+        SKIP_WHITE_SPACE(current_line,index)
+        if(current_line[index]=='\n'||current_line[index]==EOF||current_line[index]==';'||current_line[index]=='\0')
+            continue;
+        splitted_line= split_string(current_line+index," ",&num_of_words_in_line);
+        if(get_lines(table,splitted_line[0])!=NULL)
+            fputs(get_lines(table,splitted_line[0]),am_file_des);
+        else if(strcmp(splitted_line[0],MACRO_DEC)==0){
+            macro_declration=TRUE;
+            macro_name=(char*) calloc(MAX_MACRO_NAME_LENGTH, sizeof(char ));
+            strcpy(macro_name,splitted_line[1]);
+            insert_macro_content(table,macro_name,"");
         }
-        return macro_definition;
-    }
-
-    // Handle macro invocation or any other line.
-    extract_macro_name(line, macro_name, sizeof(macro_name));
-    if (get_lines(table, macro_name)) {
-        return macro_call; // Macro name found, treat the line as a macro call.
-    } else {
-        return any_other_line; // Treat the line as any other line.
-    }
-}
-const char *preprocessor(char *file_name, char *str) {
-    char line_buffer[MAX_LINE_LENGTH] = {0};
-    macro_states result;
-    size_t as_file_name_len,am_file_name_len;
-    char *as_file_name, *am_file_name;
-    FILE *am_file, *as_file;
-    macro_table *table = create_macro_table(); // Use create_macro_table to initialize the macro table.
-    struct macro_table_content *current_macro = NULL;
-    int line_count = 1;
-
-    as_file_name_len = strlen(file_name);
-    as_file_name = strcat(strcpy(malloc(as_file_name_len + strlen(AS_FILE_EXTENSION) + 1), file_name), AS_FILE_EXTENSION);
-    file_name = strcat(strcpy(malloc(strlen(str) + strlen(file_name) + 1), str), file_name);
-    am_file_name_len = strlen(file_name);
-    am_file_name = strcat(strcpy(malloc(am_file_name_len + strlen(AM_FILE_EXTENSION) + 1), file_name), AM_FILE_EXTENSION);
-
-    as_file = fopen(as_file_name, "r");
-    if (as_file == NULL) {
-        free(as_file_name);
-        free(am_file_name);
-        return NULL;
-    }
-
-    am_file = fopen(am_file_name, "w");
-    if (am_file == NULL) {
-        free(as_file_name);
-        free(am_file_name);
-        return NULL;
-    }
-
-    while (fgets(line_buffer, sizeof(line_buffer), as_file)) {
-        result = line_examination(line_buffer, &current_macro);
-        switch (result) {
-            case macro_definition:
-                // Macro definition start, handled within line_examination
-                break;
-            case end_macro_definition:
-                // End of macro definition, current_macro set to NULL within line_examination
-                break;
-            case macro_call:
-                // For a macro call, insert the macro's lines to the output file
-                fputs(get_lines(table, current_macro->macro_name), am_file);
-                current_macro = NULL;
-                break;
-            case any_other_line:
-                // For any other line, either append to the current macro or write directly to the file
-                if (current_macro) {
-                    // Assuming there's a way to append lines to the current macro's content in your implementation
-                    append_macro_lines(table, current_macro->macro_name, line_buffer);
-                } else {
-                    fputs(line_buffer, am_file);
-                }
-                break;
+        else if(strcmp(splitted_line[0],END_MACRO_DEC)==0){
+            macro_declration=FALSE;
         }
-        line_count++;
+        else if(macro_declration==TRUE){
+            char *new_macro= str_allocate_cat(get_lines(table,macro_name),current_line);
+            insert_macro_content(table,macro_name,new_macro);
+            free(new_macro);
+        }
+        else{
+            fputs(current_line,am_file_des);
+        }
+        free_split_string(splitted_line,num_of_words_in_line);
     }
 
-    // Cleanup and close files
+    free(am_filename);
+    free(origin_filename);
+    fclose(origin_file_des);
+    fclose(am_file_des);
     free_macro_table(table);
-    free(as_file_name);
-    fclose(as_file);
-    fclose(am_file);
-    return am_file_name; // Caller should handle freeing this memory
+    if(macro_name!=NULL)
+        free(macro_name);
+    return TRUE;
 }

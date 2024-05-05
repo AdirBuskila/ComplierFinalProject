@@ -3,6 +3,8 @@
 //
 
 #include "tabels.h"
+#include "globals.h"
+
 
 size_t hash(const char *key){
     size_t hash = 0;
@@ -133,8 +135,8 @@ void delete_macro_content(macro_table *table, const char *macro_name) {
 }
 void print_macro_table(const macro_table *table) {
     if (!table) return; // Safety check to ensure table is not NULL.
-
-    for (int i = 0; i < TABLE_SIZE; ++i) {
+    int i;
+    for ( i = 0; i < TABLE_SIZE; ++i) {
         macro_table_content *con = table->entries[i];
         // Check if the current bucket is not empty before printing its contents.
         if (!con) continue; // Skip empty buckets.
@@ -186,33 +188,7 @@ macro_table_content *get_macro_content(const macro_table *table, const char *mac
     // If no entry is found with the matching name, return NULL.
     return NULL;
 }
-void append_macro_lines(macro_table *table, const char *macro_name, const char *new_line) {
-    if (!table || !macro_name || !new_line) return; // Basic validation.
 
-    // Find the macro in the table.
-    macro_table_content *macro = get_macro_content(table, macro_name);
-    if (!macro) {
-        // If the macro doesn't exist, there's nothing to append to.
-        return;
-    }
-
-    // Calculate new content size.
-    size_t new_content_length = macro->lines ? strlen(macro->lines) + strlen(new_line) + 2 : strlen(new_line) + 1;
-    // Allocate/Reallocate memory for the new content size.
-    char *new_content = realloc(macro->lines, new_content_length);
-    if (!new_content) {
-        // Handle allocation failure.
-        return;
-    }
-
-    macro->lines = new_content;
-    // If it's not the first line, add a newline separator.
-    if (new_content_length > strlen(new_line) + 1) {
-        strcat(macro->lines, "\n");
-    }
-    // Append the new line.
-    strcat(macro->lines, new_line);
-}
 sym_table *create_sym_table(){
     sym_table *table = (sym_table *)calloc(1, sizeof(sym_table));
     if (!table) {

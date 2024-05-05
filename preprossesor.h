@@ -9,10 +9,7 @@
 #include "utils.h"
 #define END_MACRO_DEC "endemcr"
 #define MACRO_DEC "mcr"
-typedef enum{
-    macro_definition,
-    end_macro_definition,
-    macro_call,
-    any_other_line,
-}macro_states;
+
+bool preprocess_file(char *filename);
+
 #endif //COMPLIERFINALPROJECT_PREPROSSESOR_H

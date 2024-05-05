@@ -23,7 +23,6 @@ char *get_lines(const macro_table *table, const char *macro_name);
 void insert_macro_content(macro_table *table,const char *macro_name,const char *lines);
 macro_table_content *create_macro_content(const char *macro_name,const char *lines);
 macro_table *create_macro_table();
-void append_macro_lines(macro_table *table, const char *macro_name, const char *new_line);
 macro_table_content *get_macro_content(const macro_table *table, const char *macro_name);
 typedef enum sym_types{
     entry_sym=0,

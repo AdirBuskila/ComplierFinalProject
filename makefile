@@ -1,29 +1,19 @@
-# Compiler and linker configuration
-CC=gcc
-CFLAGS=-ansi -pedantic -Wall
-LDFLAGS=
-
-# Project files
-SOURCES=main.c first_pass.c second_pass.c parser.c macro_processor.c \
-        symbol_table.c data_instruction.c code_instruction.c \
-        error_handling.c output_files.c utils.c
-OBJECTS=$(SOURCES:.c=.o)
-EXECUTABLE=assembler
+CC = gcc
+CFLAGS = -Wall -g
+OBJ = assembler.o
+EXEC = assembler
 
 # Default target
-all: $(SOURCES) $(EXECUTABLE)
+all: $(EXEC)
 
-# Linking
-$(EXECUTABLE): $(OBJECTS)
-	$(CC) $(LDFLAGS) $(OBJECTS) -o $@
+# Link the object file to create the executable
+$(EXEC): $(OBJ)
+	$(CC) $(CFLAGS) -o $@.exe $^
 
-# Compilation
-.c.o:
-	$(CC) $(CFLAGS) -c $< -o $@
+# Compile the assembler.c to an object file
+assembler.o: assembler.c
+	$(CC) $(CFLAGS) -c -o $@ $<
 
-# Clean up
+# Clean target for cleaning up the compiled files
 clean:
-	rm -f $(OBJECTS) $(EXECUTABLE)
-
-# Phony targets
-.PHONY: all clean
+	rm -f $(OBJ) $(EXEC).exe

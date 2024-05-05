@@ -4,6 +4,10 @@
 #include <string.h>
 #include <stdlib.h>
 #include <stdio.h>
+typedef enum boolean{
+    FALSE=0,
+    TRUE=1
+}bool;
 /* Register and Opcode specifications */
 #define REG_COUNT 8 /* Number of registers in the CPU */
 #define OPCODE_COUNT 16 /* Total count of different opcodes */
@@ -13,6 +17,8 @@
 #define MAX_LABEL_LENGTH 31 /* Maximum length of a label */
 #define MAX_MACRO_NAME_LENGTH 31
 #define INSTRUCTIONS_COUNT 4 /* Total number of instruction types (might need adjustment) */
+#define MAX_INT_VALUE 8191
+#define MIN_INT_VALUE -8192
 
 /* Memory layout */
 #define DATA_SEGMENT_START_ADDRESS 100 /* Start address for the data segment in memory */
@@ -45,6 +51,40 @@
 
 /* Limitations for command line interface */
 #define MAX_INPUT_FILES 10 /* Maximum number of input files that can be processed in a single run */
+typedef enum registers{
+   r0=0,
+   r1,
+    r2,
+    r3,
+    r4,
+   r5,
+    r6,
+    r7
+}reg;
+
+typedef enum op_code{
+    cmd_mov=0,
+    cmd_cmp,
+    cmd_add,
+    cmd_sub,
+    cmd_not,
+    cmd_clr,
+    cmd_lea,
+    cmd_dec,
+    cmd_jmp,
+    cmd_bne,
+    cmd_red,
+    cmd_prn,
+    cmd_jsr,
+    cmd_rts,
+    cmd_hlt
+}op_code;
+enum operand_addr_type{
+    add_immed=0,
+    add_label,
+    add_label_index,
+    add_register
+};
 typedef struct first_word{
     unsigned int are_bits: 2;
     unsigned int dest_opcode_add_bits: 2;
@@ -54,7 +94,7 @@ typedef struct first_word{
 }first_word;
 typedef struct immd_or_direct_word{
     unsigned int are_bits: 2;
-    unsigned int opcode_bits: 12;
+    unsigned int opreand_bits: 12;
 }immd_or_direct_word;
 typedef struct reg_word{
     unsigned int are_bits: 2;

@@ -3,52 +3,60 @@
 //
 
 #include "asm_files.h"
-void write_obj_file(char *file_name, machine_word code_image[], long ic, data_word data_image[], long dc){
-    int i,j;
+#include "globals.h"
+#include "tabels.h"
+#include <stdlib.h>
+#include <stdio.h>
+void write_obj_file(char *filename, machine_word code_image[], long ic, data_word data_image[], long dc) {
+    FILE *file_des;
+    int i, j;
     unsigned int value;
-    if (!file_name) return; // Basic check
+    char *obj_filename = str_allocate_cat(filename, ".ob");
 
-    char *obj_file_name = str_allocate_cat(file_name, OB_FILE_EXTENSION);
-    if (!obj_file_name) {
-        printf("Memory allocation failed for object file name.\n");
+    /* Try to create a new .ob file */
+    file_des = fopen(obj_filename, "w");
+    if(file_des == NULL) {
+        printf("Couldn't open the file %s.\n", obj_filename);
+        free(obj_filename);
         return;
     }
 
-    FILE *file = fopen(obj_file_name, "w");
-    if (!file) {
-        printf("Couldn't open the file %s for writing.\n", obj_file_name);
-        free(obj_file_name);
-        return;
-    }
+    fprintf(file_des, "\t\t%ld %ld\n", ic, dc); /* Print the header */
 
-    // Writing header information
-    fprintf(file, "\t\t%ld %ld\n", ic, dc);
-
-    // Writing code image
-    for ( i = 0; i < ic; ++i) {
-
-        if (code_image[i].type_word.first_word) {
-            value=*(unsigned int *)code_image[i].type_word.first_word;
+    /* Print the code image */
+    for (i = 0; i < ic; i++) {
+        if (code_image[i].type_word.first_word != NULL) {
+            value = *(unsigned int*) code_image[i].type_word.first_word;
         }
-        fprintf(file, "0%d\t\t", i + DATA_SEGMENT_START_ADDRESS);
-            for ( j = 13; j >= 0; --j) {
-                fprintf(file, "%c", ((value >> j) & 1) ? '/' : '.');
+        fprintf(file_des, "0%d\t\t", i + 100); // Assuming IC_INIT_VALUE is 100
+        for (j = 14; j >= 0; j -= 2) { // Process two bits at a time
+            switch ((value >> j) & 3) { // Extract two bits
+                case 0: fprintf(file_des, "*"); break;
+                case 1: fprintf(file_des, "#"); break;
+                case 2: fprintf(file_des, "%"); break;
+                case 3: fprintf(file_des, "!"); break;
             }
-
-        fprintf(file, "\n");
-    }
-
-    // Writing data image
-    for (i = 0; i < dc; ++i) {
-        fprintf(file, "0%ld\t\t", i + ic + DATA_SEGMENT_START_ADDRESS);
-        for ( j = 13; j >= 0; --j) {
-            fprintf(file, "%c", (((data_image[i].data) >> j) & 1) ? '/' : '.');
         }
-        fprintf(file, "\n");
+        fprintf(file_des, "\n");
     }
 
-    fclose(file); // Ensure the file is closed properly.
-    free(obj_file_name); // Clean up dynamically allocated memory.
+    /* Print the data image */
+    for (i = 0; i < dc; i++) {
+        fprintf(file_des, "0%ld\t\t", i + ic + 100); // Assuming IC_INIT_VALUE is 100
+        for (j = 14; j >= 0; j -= 2) { // Process two bits at a time
+            switch ((data_image[i].data >> j) & 3) { // Extract two bits
+                case 0: fprintf(file_des, "*"); break;
+                case 1: fprintf(file_des, "#"); break;
+                case 2: fprintf(file_des, "%"); break;
+                case 3: fprintf(file_des, "!"); break;
+            }
+        }
+        fprintf(file_des, "\n");
+    }
+
+    /* Free the allocated memory */
+    free(obj_filename);
+    fclose(file_des);
 }
 void write_entry_file(char *file_name,sym_table *table){
     if(!file_name||!table)
